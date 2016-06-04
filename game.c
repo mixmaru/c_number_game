@@ -1,13 +1,13 @@
 #include <stdio.h>
 
+enum SqueezeSide { LEFT, RIGHT };//数字を絞る方向を記録
 int main(){
-	int want_play_num; //最低保証プレイ回数（答えが解ってしまわないようにする）
-	int start;	//質問範囲の初め
-	int end;	//質問範囲の終わり
+	int start = 1;	//質問範囲の初め
+	int end = 99;	//質問範囲の終わり
 	int answer;	//答えの数字
 	int start_limit;	//前半を絞り込む時の範囲の最大値
 	int end_limit;		//後半を絞り込む時の範囲の最小値
-	int play_num;		//回答回数。プレイ回数
+	int answer_num = 0; 	//回答回数
 
 	/*
 	do{
@@ -19,7 +19,13 @@ int main(){
 		}else{
 			int input_ok = true;
 		}
+		
 	}while(input_ok);
+
+	//変数の初期化
+	answer = 入力された数字
+	start_limit = answer - 1;
+	end_limit = answer + 1;
 
 	//ゲームスタート
 	while(true){
@@ -30,22 +36,41 @@ int main(){
 			//正しく数値を入力してください
 			continue;
 		}
+		//回答回数を追加
+		answer_num = answer_num + 1;
 		//正解チェック
 		if(入力値 == answer){
-			//正解です。おめでとうございます。play_num回で答えられました。プログラムの終了
+			//正解です。おめでとうございます。answer_num回で答えられました。プログラムの終了
 			break;
 		}
-		//不正解。範囲を絞る
-		if(奇数階数){
-			//奇数回数目なら前半を絞る
-			//start+1からstart_limitの中からランダムで一つ選んでstartに代入する。
-			start_limit = start_limi + 1;
+		//不正解。範囲を絞る。
+		//2回いないに範囲を絞れない状況はゲームオーバー。LEFT側、RIGHT側どちらも範囲を絞れなかった = 最小まで絞っても答えられなかった。
+		for(int i=0; i<2; i++){
+			if(SqueezeSide == LEFT){
+				//前半を絞る
+				//startからstart_limitの中からランダムで一つ選んでstartに代入する。
+				SqueezeSide = RIGHT;
+				//もし選んだものがstartだった場合は後半を絞る
+				if(startが選ばれた){
+					continue;
+				}else{
+					continue2;
+				}
 
-		}else{
-			//偶数階数目なら後半を絞る
-			//end-1からend_limitの中からランダムで一つ選んでendに代入する。
-			end_limit = end_limit - 1;
+			}else{
+				//後半を絞る
+				//endからend_limitの中からランダムで一つ選んでendに代入する。
+				SqueezeSide = LEFT;
+				//もし選んだものがendだった場合は前半を絞る
+				if(endが選ばれた){
+					continue;
+				}else{
+					continue2
+				}
+			}
 		}
+		//ゲームオーバー
+		return 0;
 	}
 
 	*/
