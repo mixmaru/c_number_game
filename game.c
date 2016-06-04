@@ -14,25 +14,25 @@ typedef struct {
 } GAME_RESULT;
 
 void desideAnswer(GAME_PROP *game_prop){
-	/*
-	do{
-		//答えを入力させる。
-		//入力値のチェック
-		if(入力値が正しくない){
-			//正しく数値を入力してください
-			int input_ok = false;
+	while(1){
+		//答えを入力させる
+		int answer = 0;
+		int success = 0;
+		printf("正解の数値を入力（親が入力）: \n");
+		success = scanf("%d", &answer); //文字列を入れられるとおかしくなるが、とりあえず数値を入れることを前提にする。。
+		if(success == EOF){
+			printf("入力エラー\n");
 		}else{
-			int input_ok = true;
+			//入力値のチェック
+			if(game_prop->start <= answer && answer <= game_prop->end){
+				//startとendの間で指定されている
+				game_prop->answer = answer;
+				return;
+			}else{
+				printf("%dから%dの間で指定してください。 \n", game_prop->start, game_prop->end);
+			}
 		}
-		
-	}while(input_ok);
-
-	//変数の初期化
-	answer = 入力された数字
-	start_limit = answer - 1;
-	end_limit = answer + 1;
-	*/
-	game_prop->answer = 50;
+	}
 }
 
 //結果(クリア or ゲームオーバー)とクリアの場合は回答回数を返す
