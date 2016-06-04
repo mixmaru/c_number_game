@@ -95,12 +95,19 @@ void executeGame(GAME_PROP *game_prop, GAME_RESULT *game_result){
 	*/
 }
 
+void dump_game_prop(GAME_PROP *game_prop){
+	printf("game_prop->start: %d\n", game_prop->start);
+	printf("game_prop->end: %d\n", game_prop->end);
+	printf("game_prop->answer: %d\n", game_prop->answer);
+}
+
 int main(){
 	GAME_PROP game_prop = {1, 99, -1};	//答えはとりあえず-1を入れておく
 	GAME_RESULT game_result = {0, 0};
 
 	//回答の入力決定
 	desideAnswer(&game_prop);
+	//dump_game_prop(&game_prop);//テスト出力
 
 	executeGame(&game_prop, &game_result);
 
