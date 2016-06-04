@@ -2,7 +2,18 @@
 
 enum SqueezeSide { LEFT, RIGHT };//数字を絞る方向を記録
 
-void init(int *answer, int *start_limit, int *end_limit, int start, int end){
+typedef struct {
+	int start;	//質問範囲の初め
+	int end;	//質問範囲の終わり
+	int answer;	//答えの数字
+} GAME_PROP;
+
+typedef struct {
+	int result;	//ゲーム結果　0:失敗、1:成功
+	int answer_num;	//回答回数
+} GAME_RESULT;
+
+void desideAnswer(GAME_PROP *game_prop){
 	/*
 	do{
 		//答えを入力させる。
@@ -21,10 +32,13 @@ void init(int *answer, int *start_limit, int *end_limit, int start, int end){
 	start_limit = answer - 1;
 	end_limit = answer + 1;
 	*/
+	game_prop->answer = 50;
 }
 
 //結果(クリア or ゲームオーバー)とクリアの場合は回答回数を返す
-void executeGame(int answer, int start_limit, int end_limit, int start, int end, int *result, int *answer_num){
+void executeGame(GAME_PROP *game_prop, GAME_RESULT *game_result){
+	game_result->result = 1;
+	game_result->answer_num = 10;
 	//ゲームスタート
 	/*
 	while(true){
@@ -82,27 +96,21 @@ void executeGame(int answer, int start_limit, int end_limit, int start, int end,
 }
 
 int main(){
-	int start = 1;	//質問範囲の初め
-	int end = 99;	//質問範囲の終わり
-	int answer;	//答えの数字
-	int start_limit;	//前半を絞り込む時の範囲の最大値
-	int end_limit;		//後半を絞り込む時の範囲の最小値
-	int answer_num = 0; 	//回答回数
+	GAME_PROP game_prop = {1, 99, -1};	//答えはとりあえず-1を入れておく
+	GAME_RESULT game_result = {0, 0};
 
+	//回答の入力決定
+	desideAnswer(&game_prop);
 
-	/*
-	//初期化処理
-	init(&answer, &start_limit, &end_limit, start, end);
+	executeGame(&game_prop, &game_result);
 
-	int result = 0;//ゲーム結果 0:ゲームオーバー、1:ゲームクリア
-	executeGame(answer, start_limit, end_limit, start, end, &result, &answer_num);
-
-	if(result){
-		//ゲームクリア。answre_count回でクリアしました
+	if(game_result.result){
+		//ゲームクリア。game_result.answre_num回でクリアしました
+		printf("正解！%d回の入力で正解しました。\n", game_result.answer_num);
 	}else{
 		//ゲームオーバー。
+		printf("ゲームオーバーです\n");
 	}
-	*/
 	return 0;
 }
 
