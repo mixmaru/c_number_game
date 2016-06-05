@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-enum SqueezeSide { LEFT, RIGHT };//数字を絞る方向を記録
+typedef enum { LEFT, RIGHT } NextSqueezeSide ;//数字を絞る方向を記録
 
 typedef struct {
 	int start;	//質問範囲の初め
@@ -13,6 +15,7 @@ typedef struct {
 	int answer_num;	//回答回数
 } GAME_RESULT;
 
+//答えの値を入力させて、GAME_PROP->answerにセットする。
 void desideAnswer(GAME_PROP *game_prop){
 	while(1){
 		//答えを入力させる
@@ -35,65 +38,89 @@ void desideAnswer(GAME_PROP *game_prop){
 	}
 }
 
-//結果(クリア or ゲームオーバー)とクリアの場合は回答回数を返す
-void executeGame(GAME_PROP *game_prop, GAME_RESULT *game_result){
-	game_result->result = 1;
-	game_result->answer_num = 10;
-	//ゲームスタート
+//回答入力を求めて、入力値から正解、不正解を判断し、正解ならGAME_RESULT->result = 1を代入する。
+//不正解なら、ゲームオーバーとするのか、最チャレンジさせるのか判断する。
+//ゲームオーバーとする場合はGAME_RESULT->result = 0を代入する。
+//再チャレンジさせる場合は何もせず処理を終了する
+void executeQuize(GAME_PROP *game_prop, GAME_RESULT *game_result){
 	/*
-	while(true){
+	while(1){
 		//質問する。start-1 < x < end + 1 x = ?
 		//入力させる
 		//入力値のチェック
 		if(入力値が正しくない){
 			//正しく数値を入力してください
 			continue;
+		}else{
+			break;
 		}
-		//回答回数を追加
-		answer_num = answer_num + 1;
+	}
+	//回答回数を追加
+	answer_num = answer_num + 1;
 
-		//正解チェック
-		if(入力値 == answer){
-			//正解
-			*result = 1;
-			return;
-		}
-
-		//不正解。範囲を絞る。
-		//2回いないに範囲を絞れない状況はゲームオーバー。LEFT側、RIGHT側どちらも範囲を絞れなかった = 最小まで絞っても答えられなかった。
-		int try_count=0;
-		for(; trytry_count<2; trtrytry_count++){
-			if(SqueezeSide == LEFT){
-				//前半を絞る
-				//startからstart_limitの中からランダムで一つ選んでstartに代入する。
-				SqueezeSide = RIGHT;
-				//もし選んだものがstartだった場合は後半を絞る
-				if(startが選ばれた){
-					continue;
-				}else{
-					continue2;
-				}
-
-			}else{
-				//後半を絞る
-				//endからend_limitの中からランダムで一つ選んでendに代入する。
-				SqueezeSide = LEFT;
-				//もし選んだものがendだった場合は前半を絞る
-				if(endが選ばれた){
-					continue;
-				}else{
-					continue2
-				}
-			}
-		}
-		if(trytry_count >= 2){
-			//ゲームオーバー
-			*result = 0;
+	//正解チェック
+	if(入力値 == game_prop->answer){
+		//正解
+		game_result->result = 1;
+		return;
+	}else{
+		//不正解。ゲームオーバー判定。
+		if(もう絞る範囲がない){
+			game_result->result = 0;
 			return;
 		}
 	}
+
 	*/
 }
+
+//出題範囲を絞る。「GAME_PROP->start側を絞る -> GAME_PROP->end側を絞る」と交互に絞る。
+//ただし、片方がたまたま絞られなかったり、絞る範囲がなければもう片方が連続で絞られることになる。
+//どちらも絞る範囲が充分に小さくて絞れない場合はエラーとして0を返す。
+//どちらかが絞れた時は成功として1を返す。
+int squeeze(GAME_PROP *game_prop, NextSqueezeSide *next_squeeze_side){
+	/*
+	if(もう絞れる範囲がない){
+		return 0;
+	}
+
+	if(next_squeeze_side == LEFT){
+		//前半を絞る
+		//startからanswerのひとつ前までの中からランダムで一つ選んでstartに代入する。
+		int choiced_number = choiceNumber(game_prop->start, game_prop->answer-1);
+		//もし選んだものがstartだった場合は後半を絞る
+		if(choiced_number == game_prop->start){
+			game_prop->end = choiceNumber(game_prop->answer+1, game_prop->end-1);
+			next_next_squeeze_side = LIFT;
+		}else{
+			next_next_squeeze_side = RIGHT;
+		}
+
+	}else{
+		//後半を絞る
+		//endからanswerのひとつ後ろまでの中からランダムで一つ選んでendに代入する。
+		int choiced_number = choiceNumber(game_prop->answer+1, game_prop->end);
+		//もし選んだものがendだった場合は前半を絞る
+		if(choiced_number == game_prop->end){
+			game_prop->start = choiceNumber(game_prop->start+1, game_prop->answer-1);
+			next_next_squeeze_side = RIGHT;
+		}else{
+			next_next_squeeze_side = LEFT;
+		}
+	}
+	return 1;
+	*/
+}
+
+//fromからtoの数値の中から一つをランダムに選んで返す。from, toを含む。
+//とりあえずrand関数を使っている
+int choiceNumber(int from, int to){
+	int num_count = to - from + 1;
+	int rand_num = rand();
+	return rand_num % num_count + from;
+}
+
+
 
 void dump_game_prop(GAME_PROP *game_prop){
 	printf("game_prop->start: %d\n", game_prop->start);
@@ -102,14 +129,28 @@ void dump_game_prop(GAME_PROP *game_prop){
 }
 
 int main(){
-	GAME_PROP game_prop = {1, 99, -1};	//答えはとりあえず-1を入れておく
-	GAME_RESULT game_result = {0, 0};
+	GAME_PROP game_prop = {1, 99, -1};	//答えが確定していない時は-1を入れておく
+	GAME_RESULT game_result = {-1, 0};	//resultが確定していない時は-1を入れておく
 
 	//回答の入力決定
 	desideAnswer(&game_prop);
 	//dump_game_prop(&game_prop);//テスト出力
 
-	executeGame(&game_prop, &game_result);
+	while(1){
+		executeQuize(&game_prop, &game_result);
+
+		/*
+		if(結果が確定した){
+			break;
+		}else{
+			if(!squeeze(&game_prop)){
+				//エラー。これ以上絞れない。executeQuizeでゲームオーバーと判定されているはずで、ここに流れてくるケースはないはず。
+				return 1;
+			}
+		}
+		*/
+		break;//実装できるまでbreakでループを抜けるようにしている
+	}
 
 	if(game_result.result){
 		//ゲームクリア。game_result.answre_num回でクリアしました
