@@ -135,6 +135,7 @@ void dump_game_prop(GAME_PROP *game_prop){
 int main(){
 	GAME_PROP game_prop = {1, 99, -1};	//答えが確定していない時は-1を入れておく
 	GAME_RESULT game_result = {-1, 0};	//resultが確定していない時は-1を入れておく
+	NextSqueezeSide next_squeeze_side = RIGHT;
 
 	//回答の入力決定
 	desideAnswer(&game_prop);
@@ -144,17 +145,15 @@ int main(){
 	while(1){
 		executeQuize(&game_prop, &game_result);
 
-		/*
-		if(結果が確定した){
+		if(game_result.result != -1){
+			//結果が確定した。
 			break;
 		}else{
-			if(!squeeze(&game_prop)){
+			if(!squeeze(&game_prop, &next_squeeze_side)){
 				//エラー。これ以上絞れない。executeQuizeでゲームオーバーと判定されているはずで、ここに流れてくるケースはないはず。
 				return 1;
 			}
 		}
-		*/
-		break;//実装できるまでbreakでループを抜けるようにしている
 	}
 
 	if(game_result.result){
