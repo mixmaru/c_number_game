@@ -43,35 +43,38 @@ void desideAnswer(GAME_PROP *game_prop){
 //ゲームオーバーとする場合はGAME_RESULT->result = 0を代入する。
 //再チャレンジさせる場合は何もせず処理を終了する
 void executeQuize(GAME_PROP *game_prop, GAME_RESULT *game_result){
-	/*
+	int input_num;
 	while(1){
 		//質問する。start-1 < x < end + 1 x = ?
+		printf("%d < x < %d  x = ? \n", game_prop->start-1, game_prop->end+1);
 		//入力させる
-		//入力値のチェック
-		if(入力値が正しくない){
-			//正しく数値を入力してください
-			continue;
-		}else{
-			break;
+		int success = scanf("%d", &input_num);
+		if(success){
+			//入力値のチェック。入力値が質問範囲内であるか確認
+			if(game_prop->start <= input_num && input_num <= game_prop->end){
+				//正しい値が入力された。
+				break;
+			}
 		}
+		//正しく数値を入力してください
+		printf("正しく数値を入力してください\n");
 	}
 	//回答回数を追加
-	answer_num = answer_num + 1;
+	game_result->answer_num++;
 
 	//正解チェック
-	if(入力値 == game_prop->answer){
+	if(input_num == game_prop->answer){
 		//正解
 		game_result->result = 1;
 		return;
 	}else{
-		//不正解。ゲームオーバー判定。
-		if(もう絞る範囲がない){
-			game_result->result = 0;
-			return;
+		//不正解。もう絞る範囲がない場合ゲームオーバー判定。
+		if(game_prop->start == game_prop->answer-1 && 
+		   game_prop->end == game_prop->answer+1){
+				game_result->result = 0;
+				return;
 		}
 	}
-
-	*/
 }
 
 //出題範囲を絞る。「GAME_PROP->start側を絞る -> GAME_PROP->end側を絞る」と交互に絞る。
@@ -110,6 +113,7 @@ int squeeze(GAME_PROP *game_prop, NextSqueezeSide *next_squeeze_side){
 	}
 	return 1;
 	*/
+	return 1;
 }
 
 //fromからtoの数値の中から一つをランダムに選んで返す。from, toを含む。
@@ -136,6 +140,7 @@ int main(){
 	desideAnswer(&game_prop);
 	//dump_game_prop(&game_prop);//テスト出力
 
+	printf("1から99の自然数を当ててください\n");
 	while(1){
 		executeQuize(&game_prop, &game_result);
 
