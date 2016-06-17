@@ -15,6 +15,14 @@ typedef struct {
 	int answer_num;	//回答回数
 } GAME_RESULT;
 
+//プロトタイプ宣言
+void desideAnswer(GAME_PROP *game_prop);
+int choiceNumber(int from, int to);
+void executeQuize(GAME_PROP *game_prop, GAME_RESULT *game_result);
+int squeeze(GAME_PROP *game_prop, NextSqueezeSide *next_squeeze_side);
+void dump_game_prop(GAME_PROP *game_prop);
+
+
 //答えの値を入力させて、GAME_PROP->answerにセットする。
 void desideAnswer(GAME_PROP *game_prop){
 	while(1){
@@ -83,37 +91,32 @@ int squeeze(GAME_PROP *game_prop, NextSqueezeSide *next_squeeze_side){
 	   game_prop->end <= game_prop->answer){
 		return 0;
 	}
-	/*
-	if(もう絞れる範囲がない){
-		return 0;
-	}
-
-	if(next_squeeze_side == LEFT){
+	if(*next_squeeze_side == LEFT){
 		//前半を絞る
-		//startからanswerのひとつ前までの中からランダムで一つ選んでstartに代入する。
-		int choiced_number = choiceNumber(game_prop->start, game_prop->answer-1);
+		//startからanswerまでの中からランダムで一つ選んでstartに代入する。
+		int choiced_number = choiceNumber(game_prop->start, game_prop->answer);
 		//もし選んだものがstartだった場合は後半を絞る
 		if(choiced_number == game_prop->start){
-			game_prop->end = choiceNumber(game_prop->answer+1, game_prop->end-1);
-			next_next_squeeze_side = LIFT;
+			game_prop->end = choiceNumber(game_prop->answer, game_prop->end-1);
+			*next_squeeze_side = LEFT;
 		}else{
-			next_next_squeeze_side = RIGHT;
+			game_prop->start = choiced_number;
+			*next_squeeze_side = RIGHT;
 		}
 
 	}else{
 		//後半を絞る
-		//endからanswerのひとつ後ろまでの中からランダムで一つ選んでendに代入する。
-		int choiced_number = choiceNumber(game_prop->answer+1, game_prop->end);
+		//endからanswerまでの中からランダムで一つ選んでendに代入する。
+		int choiced_number = choiceNumber(game_prop->answer, game_prop->end);
 		//もし選んだものがendだった場合は前半を絞る
 		if(choiced_number == game_prop->end){
-			game_prop->start = choiceNumber(game_prop->start+1, game_prop->answer-1);
-			next_next_squeeze_side = RIGHT;
+			game_prop->start = choiceNumber(game_prop->start+1, game_prop->answer);
+			*next_squeeze_side = RIGHT;
 		}else{
-			next_next_squeeze_side = LEFT;
+			game_prop->end = choiced_number;
+			*next_squeeze_side = LEFT;
 		}
 	}
-	return 1;
-	*/
 	return 1;
 }
 
