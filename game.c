@@ -137,6 +137,9 @@ void dump_game_prop(GAME_PROP *game_prop){
 }
 
 int main(){
+	//rand用seedの初期化
+	srand((unsigned)time(NULL));
+
 	GAME_PROP game_prop = {1, 99, -1};	//答えが確定していない時は-1を入れておく
 	GAME_RESULT game_result = {-1, 0};	//resultが確定していない時は-1を入れておく
 	NextSqueezeSide next_squeeze_side = RIGHT;
