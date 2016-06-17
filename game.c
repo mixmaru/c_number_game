@@ -50,11 +50,7 @@ void executeQuize(GAME_PROP *game_prop, GAME_RESULT *game_result){
 		//入力させる
 		int success = scanf("%d", &input_num);
 		if(success){
-			//入力値のチェック。入力値が質問範囲内であるか確認
-			if(game_prop->start <= input_num && input_num <= game_prop->end){
-				//正しい値が入力された。
-				break;
-			}
+			break;
 		}
 		//正しく数値を入力してください
 		printf("正しく数値を入力してください\n");
@@ -69,8 +65,8 @@ void executeQuize(GAME_PROP *game_prop, GAME_RESULT *game_result){
 		return;
 	}else{
 		//不正解。もう絞る範囲がない場合ゲームオーバー判定。
-		if(game_prop->start == game_prop->answer-1 && 
-		   game_prop->end == game_prop->answer+1){
+		if(game_prop->start >= game_prop->answer && 
+		   game_prop->end <= game_prop->answer){
 				game_result->result = 0;
 				return;
 		}
@@ -79,9 +75,14 @@ void executeQuize(GAME_PROP *game_prop, GAME_RESULT *game_result){
 
 //出題範囲を絞る。「GAME_PROP->start側を絞る -> GAME_PROP->end側を絞る」と交互に絞る。
 //ただし、片方がたまたま絞られなかったり、絞る範囲がなければもう片方が連続で絞られることになる。
-//どちらも絞る範囲が充分に小さくて絞れない場合はエラーとして0を返す。
+//どちらも絞る範囲が充分に小さくて絞れない場合は失敗として0を返す。
 //どちらかが絞れた時は成功として1を返す。
 int squeeze(GAME_PROP *game_prop, NextSqueezeSide *next_squeeze_side){
+	//まだ絞れる範囲があるか判断
+	if(game_prop->start >= game_prop->answer && 
+	   game_prop->end <= game_prop->answer){
+		return 0;
+	}
 	/*
 	if(もう絞れる範囲がない){
 		return 0;
@@ -141,7 +142,7 @@ int main(){
 	desideAnswer(&game_prop);
 	//dump_game_prop(&game_prop);//テスト出力
 
-	printf("1から99の自然数を当ててください\n");
+	printf("%dから%dの自然数を当ててください\n", game_prop.start, game_prop.end);
 	while(1){
 		executeQuize(&game_prop, &game_result);
 
